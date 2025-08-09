@@ -26,6 +26,8 @@ def load_projects():
     return []
 
 def save_projects(projects):
+    # Ensure the directory exists before writing the file.
+    os.makedirs(os.path.dirname(JSON_PATH), exist_ok=True)
     with open(JSON_PATH, 'w', encoding='utf-8') as f:
         json.dump(projects, f, indent=2)
     print("\n✅ Changes have been saved to projects.json.")
@@ -165,6 +167,13 @@ def discover_and_ingest_projects(projects):
     save_projects(projects)
 
 def main():
+    # --- Check for essential paths ---
+    if not os.path.isdir(IMAGE_FOLDER):
+        print(f"❌ CRITICAL ERROR: The image folder '{IMAGE_FOLDER}' was not found.")
+        print("Please create this folder and place your image assets inside it.")
+        return # Exit the script
+    # --- End check ---
+
     while True:
         projects = load_projects()
         project_map = {p['title'].lower(): p for p in projects}
